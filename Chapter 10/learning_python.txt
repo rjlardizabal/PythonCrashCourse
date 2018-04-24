@@ -1,0 +1,3 @@
+with python i learend how to create dictionaries
+with python i learned how to create list
+with python i learned how to work with loops
