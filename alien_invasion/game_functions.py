@@ -56,12 +56,16 @@ def update_screen(ai_settings, screen, ship, aliens, bullets):
     pygame.display.flip()
 
 
-def update_bullets(bullets):
+def update_bullets(ai_settings,screen, ship, aliens, bullets):
     bullets.update()
 
     for bullet in bullets.copy():
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
+    collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+    if len(aliens) == 0:
+        bullets.empty()
+        create_fleet(ai_settings, screen, ship, aliens)
 
 
 def get_number_aliens_x(ai_settings, alien_width):
@@ -84,12 +88,12 @@ def create_alien(ai_settings, screen, aliens, alien_number, row_number):
 def get_number_rows(ai_settings, ship_height, alien_height):
     """Determine the number of rows of alients that fit on the screen."""
     available_space_y = ai_settings.screen_height - \
-        ship_height - (3 * alien_height)
+                        ship_height - (3 * alien_height)
     number_rows = int(available_space_y / (2 * alien_height))
     return number_rows
 
 
-def create_fleet(ai_settings, screen,  ship, aliens):
+def create_fleet(ai_settings, screen, ship, aliens):
     """Create a full fleet of aliens. """
 
     # Create an alilent and find the number of aliens in a row
