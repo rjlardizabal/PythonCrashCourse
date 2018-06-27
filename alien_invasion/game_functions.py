@@ -7,11 +7,20 @@ from bullet import Bullet
 from time import sleep
 
 
-def check_events(ai_settings, screen, ship, bullets):
+def check_play_button(stats, play_button, mouse_x, mouse_y):
+    """Start a new game when player clicks the start button"""
+    if play_button.rect.collidepoint(mouse_x, mouse_y):
+        stats.game_active = True
+
+
+def check_events(ai_settings, screen, stats, play_button, ship, bullets):
     """Respond to keypresses and mouse events."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            check_play_button(stats, play_button, mouse_x, mouse_y)
         elif event.type == pygame.KEYDOWN:
             check_keydown_events(event, ai_settings, screen, ship, bullets)
 
@@ -45,7 +54,7 @@ def check_keyup_events(event, ship):
         ship.moving_left = False
 
 
-def update_screen(ai_settings, screen, ship, aliens, bullets):
+def update_screen(ai_settings, screen, stats, ship, aliens, bullets, play_button):
     """Update the images on the screen and flip the new screen."""
     # Redraw the screen during each pass through the loopself
     screen.fill(ai_settings.bg_color)
@@ -53,6 +62,10 @@ def update_screen(ai_settings, screen, ship, aliens, bullets):
         bullet.draw_bullet()
     ship.blitme()
     aliens.draw(screen)
+
+    # Draw the play button if the game is inactive.
+    if not stats.game_active:
+        play_button.draw_button()
 
     pygame.display.flip()
 
